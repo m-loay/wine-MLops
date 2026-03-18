@@ -1,0 +1,43 @@
+name: model-wine-quality
+
+on: [push]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/iterative/cml:0-dvc2-base1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train model
+        env:
+          # GitHub token is required by CML to:
+          # - Post comments on PRs
+          # - Upload images (plots)
+          # - Interact with GitHub API
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python train.py
+
+          echo "## Model Metrics" > report.md
+          cat metrics.txt >> report.md
+
+          echo "" >> report.md
+          echo "## Data viz" >> report.md
+          echo "![Feature Importance](./feature_importance.png)" >> report.md
+          echo "![Residuals](./residuals.png)" >> report.md
+
+          cml comment create report.md
+
