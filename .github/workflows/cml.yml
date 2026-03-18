@@ -2,6 +2,11 @@ name: model-wine-quality
 
 on: [push]
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
