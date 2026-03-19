@@ -30,19 +30,16 @@ jobs:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global --add safe.directory /__w/wine-MLops/wine-MLops
+          git config --global --add safe.directory /__w/wine-MLops/wine-MLops
           dvc repro
 
           git fetch --prune
           
-          # 1. Use --markdown for metrics
-          echo "## DVC Metrics Diff" > report.md
-          dvc metrics diff --markdown >> report.md 
+          # Use 'metrics show' to get the current values in Markdown
+          echo "## Current Model Metrics" > report.md
+          dvc metrics show --show-md >> report.md 
 
-          # 2. Append (>>) the rest so you don't delete the diff
-          echo "" >> report.md
-          echo "## Local Model Metrics" >> report.md
-          cat metrics.txt >> report.md
-
+          # Add your visualizations
           echo "" >> report.md
           echo "## Data viz" >> report.md
           echo "![Feature Importance](./feature_importance.png)" >> report.md
