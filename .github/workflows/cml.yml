@@ -33,8 +33,14 @@ jobs:
           dvc repro
 
           git fetch --prune
-          dvc metrics diff --show-md > report.md
-          echo "## Model Metrics" > report.md
+          
+          # 1. Use --markdown for metrics
+          echo "## DVC Metrics Diff" > report.md
+          dvc metrics diff --markdown >> report.md 
+
+          # 2. Append (>>) the rest so you don't delete the diff
+          echo "" >> report.md
+          echo "## Local Model Metrics" >> report.md
           cat metrics.txt >> report.md
 
           echo "" >> report.md
