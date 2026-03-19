@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: ghcr.io/iterative/cml:0-dvc2-base1
+      image: ghcr.io/iterative/cml:0-dvc3-base1
 
     steps:
       - name: Checkout repository
@@ -29,11 +29,18 @@ jobs:
           # - Interact with GitHub API
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python train.py
+          git config --global --add safe.directory /__w/wine-MLops/wine-MLops
 
-          echo "## Model Metrics" > report.md
+          dvc repro
+
+          git fetch --prune
+          
+          # Use 'metrics show' to get the current values in Markdown
+          echo "## Current Model Metrics" > report.md
           cat metrics.txt >> report.md
+          dvc metrics show --md >> report.md
 
+          # Add your visualizations
           echo "" >> report.md
           echo "## Data viz" >> report.md
           echo "![Feature Importance](./feature_importance.png)" >> report.md
