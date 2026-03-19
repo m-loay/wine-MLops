@@ -29,6 +29,7 @@ jobs:
           # - Interact with GitHub API
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config --global --add safe.directory /__w/wine-MLops/wine-MLops
           dvc repro
 
           git fetch --prune
